@@ -34,6 +34,35 @@ You point it at a corpus of arXiv papers + their GitHub repos. You ask questions
 
 ---
 
+## 🎯 Why Not Just Vector Search?
+
+Pure vector RAG fails in specific, predictable ways — and a senior system should know when. Here are concrete examples from our arXiv corpus showing **why each retrieval mode exists**:
+
+### Vector-only fails on exact matches
+
+A query like *"Show me the retrieval code in the FLARE repo"* needs the token `flare` and `retrieval` together in source files. Vector search returns semantically similar chunks ("augmented generation pipeline"…) but **misses the exact file** `src/retriever.py` because the embedding space doesn't preserve precise identifiers. **BM25 sparse retrieval catches it instantly** — exact string match in the chunk content.
+
+### Vector-only fails on relationships
+
+*"Which authors introduced RAG that later papers built on?"* is a multi-hop relational question. No single chunk contains the full author→paper→citation chain. Vector search returns fragments about RAG and fragments about citations, but never connects them. **GraphRAG's local entity search traverses the author→paper→citation edges** in the knowledge graph and reconstructs the answer from the graph topology.
+
+### Vector-only fails on global summarization
+
+*"What are the main research themes across these 40 papers?"* requires aggregating across the entire corpus — no single chunk is relevant. Both vector and hybrid search return thousands of individually-relevant chunks but cannot synthesize a thematic overview. **GraphRAG's global community search** map-reduces over Leiden community summaries, producing a coherent taxonomy of research directions.
+
+### Concrete retrieval comparison (from our test corpus)
+
+| Query | Vector (dense-only) | Hybrid (dense+BM25+rerank) | GraphRAG |
+|---|---|---|---|
+| "How does BM25 rank documents?" | Returns RAG overview chunk (semantic match) | **Returns exact BM25-explanation chunk #1** ✅ | N/A — not relational |
+| "Who authored the FLARE paper?" | Returns FLARE paper abstract | Returns FLARE abstract (no improvement) | **Returns full author list with entity links** ✅ |
+| "What topics are covered?" | 3 unrelated paper snippets | 3 slightly better snippets | **Returns community summary: retrieval methods, knowledge graphs, agent architectures** ✅ |
+| "Show me the retriever implementation" | Returns paper text about retrieval | **Returns `src/retriever.py` from cloned repo** ✅ | N/A |
+
+**The adaptive router chooses the right mode per query** — a cheap classifier (Haiku) decides the path, and the CRAG critic can re-route on low-confidence results.
+
+---
+
 ## 🏗️ Architecture
 
 ```
