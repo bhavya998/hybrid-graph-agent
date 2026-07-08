@@ -1,0 +1,43 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+.env.local
+
+# Data (large, regenerable — created at runtime by hga fetch/parse/ingest)
+data/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+*.swp
+
+# Chainlit
+.chainlit/
+
+# Langfuse local
+langfuse.db
+
+# MLflow
+mlruns/
+
+# Next.js UI
+ui/node_modules/
+ui/.next/

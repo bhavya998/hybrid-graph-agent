@@ -1,0 +1,5 @@
+{"query": "What is FLARE?", "expected_chunks": []}
+{"query": "How does BM25 compare to dense retrieval?", "expected_chunks": []}
+{"query": "List the main techniques for retrieval augmented generation.", "expected_chunks": []}
+{"query": "Who authored the FLARE paper?", "expected_chunks": []}
+{"query": "What is knowledge graph based reasoning?", "expected_chunks": []}
