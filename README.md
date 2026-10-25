@@ -4,6 +4,7 @@
 
 ### A fully-local research-to-code assistant. Ask questions across the AI literature and the codebases that implement it — with provenance, a knowledge graph, and an adaptive agent loop.
 
+[![CI](https://github.com/bhavya998/hybrid-graph-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/bhavya998/hybrid-graph-agent/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.x-1C3C3C?logo=langchain&logoColor=white)](https://langchain.com)
