@@ -8,9 +8,9 @@
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
 [![LangGraph](https://img.shields.io/badge/LangGraph-1.x-1C3C3C?logo=langchain&logoColor=white)](https://langchain.com)
 [![License](https://img.shields.io/badge/License-MIT-22c55e)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production--Ready-6366f1)]()
+[![Status](https://img.shields.io/badge/Status-Working%20prototype-6366f1)]()
 
-**Zero API keys. Runs 100% on your GPU.**
+**Zero API keys by default — the `local_gpu` profile runs 100% on your GPU.** An optional API profile swaps in Claude, Voyage and Cohere.
 
 </div>
 
@@ -20,7 +20,7 @@
 
 Most RAG demos are a single vector store + an LLM call. This isn't that.
 
-**hga** is a **production-grade retrieval system** that combines three retrieval paradigms — **hybrid search** (dense + sparse), **GraphRAG** (knowledge graph), and **tool-augmented agents** — into a single adaptive pipeline that routes each query to the best strategy.
+**hga** is a retrieval system that combines three retrieval paradigms — **hybrid search** (dense + sparse), **GraphRAG** (knowledge graph), and **tool-augmented agents** — into a single adaptive pipeline that routes each query to the best strategy.
 
 You point it at a corpus of arXiv papers + their GitHub repos. You ask questions. It decides whether to use vector search, BM25 keyword search, graph traversal, or MCP tools, retrieves the most relevant context, reranks it with a cross-encoder, and generates a cited answer — all running on local models, no cloud required.
 
@@ -59,7 +59,7 @@ A query like *"Show me the retrieval code in the FLARE repo"* needs the token `f
 | "What topics are covered?" | 3 unrelated paper snippets | 3 slightly better snippets | **Returns community summary: retrieval methods, knowledge graphs, agent architectures** ✅ |
 | "Show me the retriever implementation" | Returns paper text about retrieval | **Returns `src/retriever.py` from cloned repo** ✅ | N/A |
 
-**The adaptive router chooses the right mode per query** — a cheap classifier (Haiku) decides the path, and the CRAG critic can re-route on low-confidence results.
+**The adaptive router chooses the right mode per query** — a small classifier LLM (Qwen 1.5B on `local_gpu`, Claude Haiku on the API profile) decides the path, and the CRAG critic can re-route on low-confidence results.
 
 ---
 
@@ -128,7 +128,7 @@ A query like *"Show me the retrieval code in the FLARE repo"* needs the token `f
 - Why? "Who cited whom" and "what are the main themes" questions are impossible with vector search alone
 
 ### 🤖 Adaptive Multi-Agent (LangGraph)
-- **Router** (Haiku-speed classifier): picks one of 6 routes per query
+- **Router** (small-LLM classifier, structured JSON): picks one of 6 routes per query
 - **Retriever**: executes the chosen strategy (vector / hybrid / graph / tool)
 - **Critic**: CRAG pattern — checks retrieval faithfulness, triggers up to 2 retries
 - **Synthesizer**: generates the final answer with inline citations
@@ -139,11 +139,11 @@ A query like *"Show me the retrieval code in the FLARE repo"* needs the token `f
 - Standalone FastMCP server — any MCP client (Claude Desktop, OpenCode, Cursor) can connect
 - Tools: `search_corpus`, `read_paper`, `list_papers`, `search_chunks`, `read_repo_file`
 
-### 🏠 100% Local (No API Keys)
-- All models run on your machine via HuggingFace transformers
+### 🏠 100% Local by Default (No API Keys)
+- On the default `local_gpu` profile, all models run on your machine via HuggingFace transformers
 - bge-small (embeddings) + bge-reranker (reranking) + Qwen 1.5B 4-bit (generation)
 - Graceful CPU fallback when no GPU is detected
-- Zero cloud dependency, zero rate limits, zero cost
+- Zero cloud dependency, zero rate limits, zero cost — the API profile is opt-in (see [Provider Profiles](#-provider-profiles))
 
 ### 📊 Eval + Observability
 - Custom LLM-as-judge harness: faithfulness, answer relevancy, context precision/recall
@@ -336,6 +336,6 @@ MIT
 
 <div align="center">
 
-Built as a portfolio project demonstrating production-grade RAG architecture with modern (2026) best practices.
+Built as a portfolio project demonstrating a hybrid RAG + GraphRAG + agent architecture with modern (2026) practices.
 
 </div>

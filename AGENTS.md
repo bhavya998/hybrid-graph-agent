@@ -5,11 +5,11 @@ Non-negotiable rules. Follow exactly.
 ## Environment
 - Python 3.12 only (pinned via `.python-version`). Use `uv` for all package ops.
 - Run anything via `uv run <cmd>` so the venv is used. Never `pip install`.
-- All-API stack: Anthropic (LLM), Voyage (embeddings), Cohere (rerank), Langfuse Cloud (tracing). No self-hosted models, no Docker.
+- Default stack (`local_gpu`): self-hosted bge-small, bge-reranker and Qwen 1.5B 4-bit. The opt-in `local` profile is all-API: Anthropic (LLM), Voyage (embeddings), Cohere (rerank), Langfuse Cloud (tracing). No Docker.
 
 ## Architecture contracts
 1. **Interfaces first.** Every external capability is behind a Protocol/ABC in `hga/llm/`, `hga/embeddings/`, `hga/retrieval/`, `hga/graph/`, `hga/tools/`. Agent/graph code imports interfaces, never provider SDKs directly.
-2. **Provider profiles.** `hga.config.Settings` has a `profile: Literal["local","databricks"]`. Concrete implementations are selected by profile. The local profile is the only one implemented now; the databricks profile is a stub documented in `docs/MIGRATION_TO_DATABRICKS.md`.
+2. **Provider profiles.** `hga.config.Settings` has a `profile: Literal["local_gpu","local","databricks"]`. Concrete implementations are selected by profile. `local_gpu` (default) and `local` are implemented; the databricks profile is a stub documented in `docs/MIGRATION_TO_DATABRICKS.md`.
 3. **Pydantic v2 everywhere.** `Chunk`, `AgentState`, `Citation`, `Settings`, all LLM I/O schemas. Mypy strict passes.
 4. **Type hints mandatory** on every function (Python type hints, per global rule).
 5. **Docstrings mandatory** on every public function/class (per global rule).
